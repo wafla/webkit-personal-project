@@ -1,0 +1,31 @@
+server:
+  port: 7777
+spring:
+  application:
+    name: spring-security-jwt
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/edudb
+    username: scott
+    password: tiger
+  jpa:
+    hibernate:
+      ddl-auto: update #개발 중일 때는 update, 배포시에는 none 으로 권장
+      show-sql: true
+    properties:
+      hibernate:
+        format_sql: true3
+        dialect: org.hibernate.dialect.MySQLDialect
+  logging:
+    level:
+      org.hibernate.SQL: debug
+      org.hibernate.type: trace
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 1000MB
+jwt:
+  secret: "mytop_secret_key_123456_abcdefghijk"  # JWT 서명에 사용할 시크릿 키. 너무 짧으면 예외 발생할 수 있음(32바이트이상이어야함)
+  access-token-expiration: 900000   # 15분 (밀리초)
+  refresh-token-expiration: 86400000  # 1일 (밀리초)

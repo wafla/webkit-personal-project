@@ -1,0 +1,13 @@
+server:
+  port: 8888
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+  devtools:
+    livereload:
+      enabled: true
+spring:
+  profiles:
+    active: dev  #mysql
+#    active: prod  #oracle

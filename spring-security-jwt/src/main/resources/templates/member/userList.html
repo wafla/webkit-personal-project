@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MyPage</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script>
+        function  check(){
+            if(frm.findType.value=="0"){
+                alert('검색 유형을 선택하세요');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body  class="gradient-custom">
+<div class="container text-center p-5">
+    <h1>모든 회원 목록 [Admin Page]</h1>
+    <div class="alert alert-danger">
+        <h3>관리자만 볼 수 있는 페이지 입니다</h3>
+        <h4  th:if="${session.loginUser!=null && session.loginUser.name!=null}"
+             th:text="|${session.loginUser.name}님 로그인 중...|"></h4>
+        <h4 th:if="${session.loginUser!=null}">[<a href="/logout">Logout</a>]</h4>
+    </div>
+    <hr>
+    <div class="my-3">
+        <!-- 검색 폼 ------------------------- -->
+        <form name="frm" action="/admin/users" onsubmit="return check()">
+            <select name="findType">
+                <option value="0">::검색 유형::</option>
+                <option value="1" th:selected="${findType==1}">이름</option>
+                <option value="2" th:selected="${findType==2}">이메일</option>
+                <option value="3" th:selected="${findType==3}">ROLE</option>
+            </select>
+            <input type="search" name="findKeyword" placeholder="검색어" required>
+            <button class="btn btn-info">검   색</button>
+        </form>
+    </div>
+    <div>
+        <h3 th:text="${findKeyword}" class="text-primary text-center"></h3>
+    </div>
+    <div class="my-2">
+        <table class="table table-striped table-hovered">
+            <thead>
+            <tr>
+                <th>회원번호</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>가입일</th>
+                <th>ROLE</th>
+                <th>수정|삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--[1] html 주석            -->
+            <!--/*  타임리프 주석 */-->
+            <tr th:if="${userList !=null and not #lists.isEmpty(userList)}"
+                th:each="user,status:${userList}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${#temporals.format(user.indate,'yyyy-MM-dd')}"></td>
+                <td th:text="${user.role}"></td>
+                <td>
+                    <!-- 경로(path) 변수로 전달하는 경우  /admin/userEdit/100 -->
+                    <a th:href="@{/admin/userEdit/{id}(id=${user.id})}">수정</a> |
+                    <!-- 쿼리 파라미터(query string)로 전달하는 경우 /admin/userDelete?id=100 -->
+                    <a th:href="@{/admin/userDelete(id=${user.id})}">삭제</a>
+                </td>
+            </tr>
+            <tr th:unless="${userList !=null and not #lists.isEmpty(userList)}">
+                <td colspan="5">
+                    데이터가 없습니다
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    [<a href="/">돌아가기</a>]
+    [<a th:href="@{/}">홈으로 돌아가기</a>]
+    <!--/*
+                #lists.isEmpty(userList)
+
+    #lists는 리스트 관련 유틸리티 객체입니다.
+    isEmpty(userList)는 리스트가 비어 있는지 확인하는 메서드입니다.
+    userList가 null이거나 빈 리스트([])라면 true를 반환합니다.
+    #temporals.format(user.createdAt, 'yyyy-MM-dd')
+
+    #temporals는 java.time 패키지의 날짜/시간 관련 유틸리티 객체입니다.
+    format(user.createdAt, 'yyyy-MM-dd')는 LocalDateTime 또는 ZonedDateTime 값을 yyyy-MM-dd 형식으로 변환합니다.
+    ============================
+    #strings	문자열 조작 관련 메서드 제공	#strings.toUpperCase(user.name) → user.name을 대문자로 변환
+    #numbers	숫자 포맷팅 및 변환 제공	#numbers.formatDecimal(user.salary, 1, 2) → 소수점 2자리까지 표시
+    #dates	날짜 및 시간 변환 (구식 java.util.Date 기반)	#dates.format(user.birthDate, 'yyyy-MM-dd')
+    #temporals	java.time(Java 8 이상) 날짜/시간 조작	#temporals.format(user.createdAt, 'yyyy-MM-dd')
+    #lists	리스트 관련 기능 제공	#lists.isEmpty(userList)
+    #maps	맵(Map) 관련 기능 제공	#maps.containsKey(myMap, 'key')
+    #objects	객체 관련 유틸리티 제공	#objects.nullSafe(user.name, '기본값') (값이 null이면 '기본값' 반환)
+    ==============================================
+                */-->
+
+
+</div>
+</body>
+</html>
